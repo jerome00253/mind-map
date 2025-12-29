@@ -1,4 +1,4 @@
-import exampleData from 'simple-mind-map/example/exampleData'
+import exampleData from '@/config/exampleData'
 import { simpleDeepClone } from 'simple-mind-map/src/utils/index'
 import Vue from 'vue'
 import vuexStore from '@/store'
@@ -111,8 +111,8 @@ export const getLang = () => {
   if (lang) {
     return lang
   }
-  storeLang('zh')
-  return 'zh'
+  storeLang('fr')
+  return 'fr'
 }
 
 // 存储本地配置

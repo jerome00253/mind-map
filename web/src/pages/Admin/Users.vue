@@ -1,7 +1,15 @@
 <template>
   <div class="admin-users-container">
     <div class="header">
-      <h2>Gestion des Utilisateurs</h2>
+      <div style="display: flex; align-items: center;">
+        <el-button
+          icon="el-icon-arrow-left"
+          circle
+          @click="$router.push('/')"
+          style="margin-right: 15px;"
+        ></el-button>
+        <h2>Gestion des Utilisateurs</h2>
+      </div>
       <el-button type="primary" icon="el-icon-plus" @click="handleAdd"
         >Nouvel Utilisateur</el-button
       >

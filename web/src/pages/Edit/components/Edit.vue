@@ -117,7 +117,7 @@ import { showLoading, hideLoading } from '@/utils/loading'
 import handleClipboardText from '@/utils/handleClipboardText'
 import { getParentWithClass } from '@/utils'
 import Scrollbar from './Scrollbar.vue'
-import exampleData from 'simple-mind-map/example/exampleData'
+import exampleData from '@/config/exampleData'
 import FormulaSidebar from './FormulaSidebar.vue'
 import NodeOuterFrame from './NodeOuterFrame.vue'
 import NodeTagStyle from './NodeTagStyle.vue'
@@ -348,11 +348,16 @@ export default {
           })
           // Optional: show saved status
         } catch (error) {
+        } catch (error) {
           console.error('Auto save failed', error)
+          if (error.response && error.response.status === 404) {
+              this.$message.error('La carte a été supprimée du serveur. Arrêt de la sauvegarde automatique.')
+              this.cloudMapUuid = null
+              this.isCloudMap = false
+          }
         }
       }, 1000)
     },
-
 
     // 手动保存
     manualSave() {
@@ -375,6 +380,15 @@ export default {
             this.cloudMapUuid = uuid
           }
         } catch (error) {
+        } catch (error) {
+          console.error(error)
+          if (error.response && error.response.status === 404) {
+             this.$message.error('Carte introuvable. Redirection vers vos cartes...')
+             setTimeout(() => {
+                 this.$router.push('/my-maps')
+             }, 1000)
+             return
+          }
           this.$message.error('Impossible de charger la carte')
         }
       }
@@ -384,7 +398,16 @@ export default {
       const config = this.mindMapConfig
 
       if (isCloudMap && cloudMapData) {
-        const data = JSON.parse(cloudMapData.data)
+        let data = cloudMapData.data
+        // Handle double-stringification or string data from DB
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse map data', e)
+          }
+        }
+
         root = data.root
         layout = data.layout
         theme = data.theme
@@ -392,7 +415,7 @@ export default {
       } else if (hasFileURL) {
         root = {
           data: {
-            text: this.$t('edit.root')
+            text: exampleData.root.data.text
           },
           children: []
         }

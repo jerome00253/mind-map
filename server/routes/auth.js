@@ -61,7 +61,8 @@ router.post('/login', async (req, res) => {
         user: {
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
+          role: user.role
         },
         token
       }
@@ -79,7 +80,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticate, async (req, res) => {
   try {
     const [users] = await pool.execute(
-      'SELECT id, username, email, created_at FROM users WHERE id = ?',
+      'SELECT id, username, email, role, created_at FROM users WHERE id = ?',
       [req.user.id]
     );
 

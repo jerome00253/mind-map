@@ -26,9 +26,17 @@
       </div>
       <!-- 导出 -->
       <div class="toolbarBlock">
-        <div class="toolbarBtn" @click="openDirectory" v-if="!isMobile">
+        <!-- <div class="toolbarBtn" @click="openDirectory" v-if="!isMobile">
           <span class="icon iconfont icondakai"></span>
           <span class="text">{{ $t('toolbar.directory') }}</span>
+        </div> -->
+        <div
+          class="toolbarBtn"
+          @click="saveToCloud"
+          v-if="!isMobile && !isCloudMap"
+        >
+          <span class="icon el-icon-upload2"></span>
+          <span class="text">Enregistrer en BDD</span>
         </div>
         <el-tooltip
           effect="dark"
@@ -182,6 +190,7 @@ import { mapState, mapActions } from 'vuex'
 import { Notification } from 'element-ui'
 import exampleData from 'simple-mind-map/example/exampleData'
 import { getData } from '../../../api'
+import api from '../../../api/backend'
 import ToolbarNodeBtnList from './ToolbarNodeBtnList.vue'
 import { throttle, isMobile } from 'simple-mind-map/src/utils/index'
 
@@ -238,6 +247,9 @@ export default {
     }
   },
   computed: {
+    isCloudMap() {
+      return !!this.$route.query.uuid
+    },
     ...mapState({
       isDark: state => state.localConfig.isDark,
       isHandleLocalFile: state => state.isHandleLocalFile,
@@ -467,6 +479,38 @@ export default {
         })
       }
       fileReader.readAsText(file)
+    },
+
+    // Sauvegarder en BDD
+    async saveToCloud() {
+      try {
+        const { value: title } = await this.$prompt(
+          'Entrez le titre de la carte',
+          'Enregistrer en BDD',
+          {
+            confirmButtonText: 'Sauvegarder',
+            cancelButtonText: 'Annuler'
+          }
+        )
+
+        if (!title) return
+
+        const data = getData() // Get current mindmap data
+        const payload = {
+          title,
+          data, // Send as object, let backend/axios handle serialization
+          is_public: false
+        }
+
+        await api.createMindMap(payload)
+        this.$message.success('Carte sauvegardée avec succès !')
+        this.$router.push('/my-maps')
+      } catch (error) {
+        if (error !== 'cancel') {
+          this.$message.error('Erreur lors de la sauvegarde')
+          console.error(error)
+        }
+      }
     },
 
     // 渲染读取的数据

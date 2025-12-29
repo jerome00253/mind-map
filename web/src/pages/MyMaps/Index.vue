@@ -86,7 +86,7 @@
 <script>
 import api from '@/api/backend'
 import { mapState } from 'vuex'
-import exampleData from 'simple-mind-map/example/exampleData'
+import exampleData from '@/config/exampleData'
 
 export default {
   data() {
@@ -120,8 +120,19 @@ export default {
     },
     async createNewMap() {
       try {
+        const { value: title } = await this.$prompt(
+          'Entrez le titre de la nouvelle carte',
+          'Nouvelle Carte',
+          {
+            confirmButtonText: 'Créer',
+            cancelButtonText: 'Annuler'
+          }
+        )
+
+        if (!title) return
+
         const res = await api.createMindMap({
-          title: 'Nouvelle Carte',
+          title: title,
           data: exampleData
         })
         if (res.data.success) {
@@ -130,7 +141,9 @@ export default {
           this.$router.push(`/?uuid=${res.data.data.mindmap.uuid}`)
         }
       } catch (error) {
-        this.$message.error('Erreur lors de la création')
+        if (error !== 'cancel') {
+          this.$message.error('Erreur lors de la création')
+        }
       }
     },
     openMap(uuid) {
