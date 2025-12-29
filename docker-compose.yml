@@ -5,7 +5,7 @@ services:
     build: .
     container_name: mindmap
     ports:
-      - "80:80"
+      - "1975:80"
     volumes:
       # Persistance de la base de données MySQL dans ./data
       - ./data:/var/lib/mysql
