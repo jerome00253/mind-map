@@ -21,6 +21,12 @@ RUN apt-get update && apt-get install -y \
 # Créer les répertoires nécessaires
 RUN mkdir -p /app/backend /app/frontend /var/log/supervisor
 
+# Configurer MySQL
+RUN mkdir -p /var/run/mysqld && \
+    chown -R mysql:mysql /var/run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql && \
+    usermod -d /var/lib/mysql mysql
+
 # Copier la bibliothèque simple-mind-map (pas de build nécessaire)
 COPY simple-mind-map /app/simple-mind-map
 WORKDIR /app/simple-mind-map
