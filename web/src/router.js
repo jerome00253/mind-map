@@ -26,6 +26,16 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: () => import(`./pages/Register/Index.vue`)
+  },
+  {
+    path: '/my-maps',
+    name: 'MyMaps',
+    component: () => import(`./pages/MyMaps/Index.vue`)
+  },
+  {
+    path: '/share/:token',
+    name: 'Share',
+    component: () => import(`./pages/Share/Index.vue`)
   }
 ]
 

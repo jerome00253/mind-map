@@ -173,7 +173,6 @@ import NodeNote from './NodeNote.vue'
 import NodeTag from './NodeTag.vue'
 import Export from './Export.vue'
 import Import from './Import.vue'
-import Import from './Import.vue'
 import { mapState, mapActions } from 'vuex'
 import { Notification } from 'element-ui'
 import exampleData from 'simple-mind-map/example/exampleData'
@@ -564,8 +563,7 @@ export default {
         this.$message.success('Déconnexion réussie')
         this.$router.push('/login')
       } else if (command === 'myMaps') {
-        // TODO: Navigate to My Maps
-        this.$message.info('Fonctionnalité Mes Cartes bientôt disponible')
+        this.$router.push('/my-maps')
       }
     }
   }

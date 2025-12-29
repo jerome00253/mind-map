@@ -102,6 +102,7 @@ import Contextmenu from './Contextmenu.vue'
 import RichTextToolbar from './RichTextToolbar.vue'
 import NodeNoteContentShow from './NodeNoteContentShow.vue'
 import { getData, getConfig, storeData } from '@/api'
+import api from '@/api/backend'
 import Navigator from './Navigator.vue'
 import NodeImgPreview from './NodeImgPreview.vue'
 import SidebarTrigger from './SidebarTrigger.vue'
@@ -195,7 +196,9 @@ export default {
       mindMapConfig: {},
       prevImg: '',
       storeConfigTimer: null,
-      showDragMask: false
+      showDragMask: false,
+      isCloudMap: false,
+      cloudMapUuid: null
     }
   },
   computed: {
@@ -316,7 +319,39 @@ export default {
     bindSaveEvent() {
       this.$bus.$on('data_change', data => {
         storeData({ root: data })
+        if (this.isCloudMap) {
+          this.autoSaveToCloud()
+        }
       })
+      this.$bus.$on('view_data_change', data => {
+        clearTimeout(this.storeConfigTimer)
+        this.storeConfigTimer = setTimeout(() => {
+          storeData({
+            view: data
+          })
+          if (this.isCloudMap) {
+            this.autoSaveToCloud()
+          }
+        }, 300)
+      })
+    },
+
+    // Auto save to cloud
+    autoSaveToCloud() {
+      if (!this.cloudMapUuid) return
+      clearTimeout(this.cloudSaveTimer)
+      this.cloudSaveTimer = setTimeout(async () => {
+        try {
+          const data = this.mindMap.getData(true)
+          await api.updateMindMap(this.cloudMapUuid, {
+            data
+          })
+          // Optional: show saved status
+        } catch (error) {
+          console.error('Auto save failed', error)
+        }
+      }, 1000)
+    },
       this.$bus.$on('view_data_change', data => {
         clearTimeout(this.storeConfigTimer)
         this.storeConfigTimer = setTimeout(() => {
@@ -332,13 +367,37 @@ export default {
       storeData(this.mindMap.getData(true))
     },
 
-    // 初始化
-    init() {
+    async init() {
+      let isCloudMap = false
+      let cloudMapData = null
+
+      // Check for UUID in query
+      const uuid = this.$route.query.uuid
+      if (uuid) {
+        try {
+          const res = await api.getMindMap(uuid)
+          if (res.data.success) {
+            cloudMapData = res.data.data.mindmap
+            isCloudMap = true
+            this.isCloudMap = true
+            this.cloudMapUuid = uuid
+          }
+        } catch (error) {
+          this.$message.error('Impossible de charger la carte')
+        }
+      }
+
       let hasFileURL = this.hasFileURL()
       let { root, layout, theme, view } = this.mindMapData
       const config = this.mindMapConfig
-      // 如果url中存在要打开的文件，那么思维导图数据、主题、布局都使用默认的
-      if (hasFileURL) {
+
+      if (isCloudMap && cloudMapData) {
+        const data = JSON.parse(cloudMapData.data)
+        root = data.root
+        layout = data.layout
+        theme = data.theme
+        view = data.view
+      } else if (hasFileURL) {
         root = {
           data: {
             text: this.$t('edit.root')
@@ -349,6 +408,7 @@ export default {
         theme = exampleData.theme
         view = null
       }
+
       this.mindMap = new MindMap({
         el: this.$refs.mindMapContainer,
         data: root,
