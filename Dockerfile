@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 # Éviter les prompts interactifs
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Installer les dépendances système et Node.js 18
+# Installer les dépendances système et Node.js 16
 RUN apt-get update && apt-get install -y \
     nginx \
     mysql-server \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt-get update \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
