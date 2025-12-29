@@ -11,29 +11,14 @@ if [ -z "$JWT_SECRET" ]; then
     echo "✅ JWT_SECRET généré et sauvegardé"
 fi
 
-# Démarrer MySQL en arrière-plan
-echo "📦 Démarrage de MySQL..."
-service mysql start
-
 # Attendre que MySQL soit prêt
 echo "⏳ Attente de MySQL..."
-until mysqladmin ping -h localhost --silent; do
-    echo "En attente de MySQL..."
+until nc -z -v -w30 $DB_HOST 3306; do
+    echo "En attente de MySQL sur $DB_HOST:3306..."
     sleep 2
 done
 
-echo "✅ MySQL est prêt"
-
-# Créer la base de données et l'utilisateur
-echo "🗄️ Configuration de la base de données..."
-mysql -u root <<-EOSQL
-    CREATE DATABASE IF NOT EXISTS mindmap;
-    CREATE USER IF NOT EXISTS 'mindmap'@'localhost' IDENTIFIED BY 'mindmap_password';
-    GRANT ALL PRIVILEGES ON mindmap.* TO 'mindmap'@'localhost';
-    FLUSH PRIVILEGES;
-EOSQL
-
-echo "✅ Base de données configurée"
+echo "✅ MySQL est accessible"
 
 # Créer les tables et l'utilisateur admin
 echo "👤 Création de l'utilisateur admin..."

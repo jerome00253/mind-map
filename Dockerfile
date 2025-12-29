@@ -6,7 +6,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Installer les dépendances système et Node.js 16
 RUN apt-get update && apt-get install -y \
     nginx \
-    mysql-server \
     curl \
     supervisor \
     ca-certificates \
@@ -20,12 +19,6 @@ RUN apt-get update && apt-get install -y \
 
 # Créer les répertoires nécessaires
 RUN mkdir -p /app/backend /app/frontend /var/log/supervisor
-
-# Configurer MySQL
-RUN mkdir -p /var/run/mysqld && \
-    chown -R mysql:mysql /var/run/mysqld && \
-    chown -R mysql:mysql /var/lib/mysql && \
-    usermod -d /var/lib/mysql mysql
 
 # Copier la bibliothèque simple-mind-map (pas de build nécessaire)
 COPY simple-mind-map /app/simple-mind-map
@@ -62,9 +55,6 @@ COPY docker/.env.docker /app/backend/.env
 
 # Exposer les ports
 EXPOSE 80
-
-# Volume pour la persistance MySQL
-VOLUME ["/var/lib/mysql"]
 
 # Définir le répertoire de travail
 WORKDIR /app/backend
