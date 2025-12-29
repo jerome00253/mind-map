@@ -24,8 +24,7 @@ const routes = [
   },
   {
     path: '/register',
-    name: 'Register',
-    component: () => import(`./pages/Register/Index.vue`)
+    redirect: '/login'
   },
   {
     path: '/my-maps',

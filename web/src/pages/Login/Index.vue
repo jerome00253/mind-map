@@ -26,11 +26,6 @@
           >
         </el-form-item>
       </el-form>
-      <div class="footer">
-        <router-link to="/register"
-          >Pas encore de compte ? S'inscrire</router-link
-        >
-      </div>
     </el-card>
   </div>
 </template>
