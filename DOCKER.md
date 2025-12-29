@@ -16,7 +16,41 @@ Le conteneur Docker unique contient :
 - 2 GB de RAM minimum
 - 5 GB d'espace disque
 
-## Construction de l'Image
+## Démarrage Rapide avec Docker Compose
+
+**La méthode la plus simple** :
+
+```bash
+# Cloner le projet
+git clone https://github.com/jerome00253/mind-map.git
+cd mind-map
+
+# Lancer l'application
+docker-compose up -d
+
+# Voir les logs
+docker-compose logs -f
+```
+
+L'application sera accessible sur `http://localhost`.
+
+**Données persistées** : Les données MySQL sont automatiquement sauvegardées dans le répertoire `./data` à côté du fichier `docker-compose.yml`.
+
+**Arrêter l'application** :
+```bash
+docker-compose down
+```
+
+**Redémarrer** :
+```bash
+docker-compose restart
+```
+
+---
+
+## Déploiement Docker Manuel
+
+### Construction de l'Image
 
 ```bash
 docker build -t mindmap:latest .

@@ -7,3 +7,4 @@ utools/dist
 
 # Docker
 docker/.env.docker.local
+data/

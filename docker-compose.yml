@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mindmap:
+    build: .
+    container_name: mindmap
+    ports:
+      - "80:80"
+    volumes:
+      # Persistance de la base de données MySQL dans ./data
+      - ./data:/var/lib/mysql
+    environment:
+      # Variables optionnelles (peuvent être surchargées)
+      - DB_HOST=localhost
+      - DB_USER=mindmap
+      - DB_PASSWORD=mindmap_password
+      - DB_NAME=mindmap
+      # JWT_SECRET sera généré automatiquement si non fourni
+      # - JWT_SECRET=votre_secret_personnalise
+    restart: unless-stopped

@@ -163,25 +163,17 @@ L'application sera accessible à `http://localhost:8081`
 - Email : `admin@test.fr`
 - Mot de passe : `pass123`
 
-### Déploiement avec Docker
+### Déploiement Docker
 
-Pour un déploiement rapide avec Docker (tout-en-un : nginx, MySQL, backend, frontend) :
+Pour un déploiement rapide avec Docker Compose :
 
 ```bash
-# Construire l'image
-docker build -t mindmap:latest .
-
-# Lancer le conteneur
-docker run -d \
-  -p 80:80 \
-  -v mindmap-data:/var/lib/mysql \
-  --name mindmap \
-  mindmap:latest
+docker-compose up -d
 ```
 
-Accédez ensuite à `http://localhost` avec les identifiants admin ci-dessus.
+L'application sera accessible sur `http://localhost`. Les données sont sauvegardées dans `./data`.
 
-📖 **Documentation complète** : Voir [DOCKER.md](./DOCKER.md) pour plus de détails sur le déploiement Docker.
+📖 Pour plus de détails (build manuel, variables d'environnement, sauvegarde, etc.), consultez [DOCKER.md](./DOCKER.md)
 
 ### Compilation pour la production
 
