@@ -16,20 +16,25 @@ RUN apt-get update && apt-get install -y \
 # Créer les répertoires nécessaires
 RUN mkdir -p /app/backend /app/frontend /var/log/supervisor
 
+# Copier et construire la bibliothèque simple-mind-map d'abord
+COPY simple-mind-map /app/simple-mind-map
+WORKDIR /app/simple-mind-map
+RUN npm install && npm run build
+
 # Copier le code backend
 COPY server /app/backend
 WORKDIR /app/backend
 RUN npm install --production
 
-# Copier et compiler le frontend
+# Copier le frontend et installer avec lien vers simple-mind-map
 COPY web /app/frontend-src
 WORKDIR /app/frontend-src
-RUN npm install && npm run build
+RUN npm install ../simple-mind-map && npm install && npm run build
 
 # Déplacer les fichiers compilés
 RUN mkdir -p /app/frontend && \
     cp -r /app/frontend-src/dist/* /app/frontend/ && \
-    rm -rf /app/frontend-src
+    rm -rf /app/frontend-src /app/simple-mind-map
 
 # Copier la configuration nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
