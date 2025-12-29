@@ -14,7 +14,8 @@ const seedAdmin = async () => {
     if (existing.length > 0) {
       console.log('✓ Compte admin existe déjà');
       connection.release();
-      return;
+      await pool.end();
+      process.exit(0);
     }
 
     // Créer le compte admin
@@ -26,9 +27,11 @@ const seedAdmin = async () => {
       console.log('✅ Admin user created');
 
     connection.release();
+    await pool.end();
     process.exit(0);
   } catch (error) {
     console.error('❌ Seeding failed:', error);
+    await pool.end();
     process.exit(1);
   }
 };
