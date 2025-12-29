@@ -50,7 +50,7 @@ Ce fork enrichit le projet original avec un système complet de gestion multi-ut
 - **Système de connexion sécurisé** - Authentification JWT avec MySQL
 - **Gestion des rôles** - Système admin/utilisateur avec interface dédiée
 - **Inscription contrôlée** - Seuls les administrateurs peuvent créer des comptes
-- **Compte admin par défaut** : `jerome0025@gmail.com` / `pass123`
+- **Compte admin par défaut** : `admin@test.fr` / `pass123`
 
 #### ✅ Sauvegarde et persistance
 
@@ -160,7 +160,7 @@ npm run serve
 L'application sera accessible à `http://localhost:8081`
 
 **Connexion administrateur par défaut** :
-- Email : `jerome0025@gmail.com`
+- Email : `admin@test.fr`
 - Mot de passe : `pass123`
 
 ### Compilation pour la production
