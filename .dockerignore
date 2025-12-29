@@ -1,9 +1,11 @@
 node_modules
-.DS_Store
+.git
+.gitignore
+*.md
 dist_electron
 simple-mind-map/dist
 simple-mind-map/types
 utools/dist
-
-# Docker
-docker/.env.docker.local
+.env
+.env.local
+*.log
