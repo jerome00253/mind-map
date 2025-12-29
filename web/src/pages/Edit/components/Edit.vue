@@ -352,15 +352,7 @@ export default {
         }
       }, 1000)
     },
-      this.$bus.$on('view_data_change', data => {
-        clearTimeout(this.storeConfigTimer)
-        this.storeConfigTimer = setTimeout(() => {
-          storeData({
-            view: data
-          })
-        }, 300)
-      })
-    },
+
 
     // 手动保存
     manualSave() {
