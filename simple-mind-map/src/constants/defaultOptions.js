@@ -61,9 +61,9 @@ export const defaultOpt = {
   // 当mousewheelAction设为zoom时，或者按住Ctrl键时，默认向前滚动是缩小，向后滚动是放大，如果该属性设为true，那么会反过来
   mousewheelZoomActionReverse: true,
   // 默认插入的二级节点的文字
-  defaultInsertSecondLevelNodeText: '二级节点',
+  defaultInsertSecondLevelNodeText: 'Nœud niveau 2',
   // 默认插入的二级以下节点的文字
-  defaultInsertBelowSecondLevelNodeText: '分支主题',
+  defaultInsertBelowSecondLevelNodeText: 'Sous-nœud',
   // 展开收起按钮的颜色
   expandBtnStyle: {
     color: '#808080',
@@ -181,7 +181,7 @@ export const defaultOpt = {
   // 协同编辑时，同一个节点不能同时被多人选中
   onlyOneEnableActiveNodeOnCooperate: false,
   // 插入概要的默认文本
-  defaultGeneralizationText: '概要',
+  defaultGeneralizationText: 'Résumé',
   // 粘贴文本的方式创建新节点时，控制是否按换行自动分割节点，即如果存在换行，那么会根据换行创建多个节点，否则只会创建一个节点
   // 可以传递一个函数，返回promise，resolve代表根据换行分割，reject代表忽略换行
   handleIsSplitByWrapOnPasteCreateNewNode: null,
@@ -411,7 +411,7 @@ export const defaultOpt = {
 
   // 【AssociativeLine插件】
   // 关联线默认文字
-  defaultAssociativeLineText: '关联',
+  defaultAssociativeLineText: 'Association',
   // 关联线是否始终显示在节点上层
   // false：即创建关联线和激活关联线时处于最顶层，其他情况下处于节点下方
   associativeLineIsAlwaysAboveNode: true,
@@ -496,7 +496,7 @@ export const defaultOpt = {
   // 【OuterFrame】插件
   outerFramePaddingX: 10,
   outerFramePaddingY: 10,
-  defaultOuterFrameText: '外框',
+  defaultOuterFrameText: 'Cadre',
 
   // 【Painter】插件
   // 是否只格式刷节点手动设置的样式，不考虑节点通过主题的应用的样式
