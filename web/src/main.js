@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import locale from 'element-ui/lib/locale/lang/fr'
 import '@/assets/icon-font/iconfont.css'
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
@@ -15,7 +16,7 @@ import { getLang } from '@/api'
 Vue.config.productionTip = false
 const bus = new Vue()
 Vue.prototype.$bus = bus
-Vue.use(ElementUI)
+Vue.use(ElementUI, { locale })
 Vue.use(VueViewer)
 
 const initApp = () => {

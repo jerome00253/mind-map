@@ -214,6 +214,26 @@ body {
     .toastui-editor-main-container {
       background-color: #fff;
     }
+
+    /* Dropdown Menu */
+    .el-dropdown-menu {
+      background-color: #36393d;
+      border-color: hsla(0, 0%, 100%, 0.1);
+
+      .el-dropdown-menu__item {
+        color: hsla(0, 0%, 100%, 0.9);
+
+        &:hover,
+        &:focus {
+          background-color: hsla(0, 0%, 100%, 0.05);
+          color: #409eff;
+        }
+
+        &.el-dropdown-menu__item--divided:before {
+          background-color: hsla(0, 0%, 100%, 0.1);
+        }
+      }
+    }
   }
 }
 </style>

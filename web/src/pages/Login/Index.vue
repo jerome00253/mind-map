@@ -74,7 +74,7 @@ export default {
           try {
             await this.login(this.form)
             this.$message.success('Connexion réussie')
-            this.$router.push('/')
+            this.$router.push('/my-maps')
           } catch (error) {
             this.$message.error(
               error.response?.data?.message || 'Erreur de connexion'

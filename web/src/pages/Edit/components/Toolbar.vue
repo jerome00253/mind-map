@@ -79,6 +79,22 @@
       </div>
       <!-- Utilisateur -->
       <div class="toolbarBlock">
+        <!-- Sauvegarde status -->
+        <div class="saveStatus" v-if="saveStatus">
+          <i class="el-icon-loading" v-if="saveStatus === 'saving'"></i>
+          <i
+            class="el-icon-check"
+            v-else-if="saveStatus === 'saved'"
+            style="color: #67C23A;"
+          ></i>
+          <i
+            class="el-icon-warning"
+            v-else-if="saveStatus === 'error'"
+            style="color: #F56C6C;"
+          ></i>
+          <span>{{ saveStatusText }}</span>
+        </div>
+
         <template v-if="user">
           <el-dropdown trigger="click" @command="handleUserCommand">
             <div class="toolbarBtn">
@@ -230,6 +246,8 @@ export default {
   },
   data() {
     return {
+      saveStatus: '',
+      saveStatusText: '',
       isMobile: isMobile(),
       horizontalList: [],
       verticalList: [],
@@ -296,6 +314,26 @@ export default {
     this.$bus.$on('lang_change', this.computeToolbarShowThrottle)
     window.addEventListener('beforeunload', this.onUnload)
     this.$bus.$on('node_note_dblclick', this.onNodeNoteDblclick)
+
+    // Cloud Save Listeners
+    this.$bus.$on('cloud_save_start', () => {
+      this.saveStatus = 'saving'
+      this.saveStatusText = 'Sauvegarde...'
+    })
+    this.$bus.$on('cloud_save_end', ({ status }) => {
+      if (status === 'success') {
+        this.saveStatus = 'saved'
+        this.saveStatusText = '' // User requested no text
+        setTimeout(() => {
+          if (this.saveStatus === 'saved') {
+            this.saveStatus = ''
+          }
+        }, 2000)
+      } else {
+        this.saveStatus = 'error'
+        this.saveStatusText = 'Erreur'
+      }
+    })
   },
   beforeDestroy() {
     this.$bus.$off('write_local_file', this.onWriteLocalFile)
@@ -626,6 +664,9 @@ export default {
   &.isDark {
     .toolbar {
       color: hsla(0, 0%, 100%, 0.9);
+      .saveStatus {
+        color: hsla(0, 0%, 100%, 0.9);
+      }
       .toolbarBlock {
         background-color: #262a2e;
 
@@ -667,10 +708,26 @@ export default {
         }
       }
 
+      .saveStatus {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        color: #666;
+        font-size: 12px;
+
+        i {
+          margin-right: 5px;
+        }
+      }
+
       .toolbarBtn {
         .icon {
           background: transparent;
           border-color: transparent;
+          color: hsla(0, 0%, 100%, 0.9) !important; // Force icon white
+        }
+        .text {
+          color: hsla(0, 0%, 100%, 0.9) !important; // Force text white
         }
 
         &:hover {

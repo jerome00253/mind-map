@@ -1,17 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Edit',
-    component: () => import(`./pages/Edit/Index.vue`)
+    redirect: '/my-maps'
   },
   {
-    path: '/index',
-    redirect: '/'
+    path: '/edit',
+    name: 'Edit',
+    component: () => import(`./pages/Edit/Index.vue`),
+    meta: { requiresAuth: true }
   },
   {
     path: '/doc/zh',
@@ -29,7 +31,8 @@ const routes = [
   {
     path: '/my-maps',
     name: 'MyMaps',
-    component: () => import(`./pages/MyMaps/Index.vue`)
+    component: () => import(`./pages/MyMaps/Index.vue`),
+    meta: { requiresAuth: true }
   },
   {
     path: '/share/:token',
@@ -40,12 +43,35 @@ const routes = [
     path: '/admin/users',
     name: 'AdminUsers',
     component: () => import(`./pages/Admin/Users.vue`),
-    meta: { requiresAdmin: true }
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.state.token) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      if (to.matched.some(record => record.meta.requiresAdmin)) {
+        if (store.state.user && store.state.user.role === 'admin') {
+          next()
+        } else {
+          next('/')
+        }
+      } else {
+        next()
+      }
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

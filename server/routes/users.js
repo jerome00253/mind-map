@@ -4,11 +4,41 @@ const bcrypt = require('bcryptjs');
 const { pool } = require('../config/database');
 const { authenticate, requireAdmin } = require('../middleware/auth');
 
-// Middleware pour toutes les routes : Authentification + Admin requis
-router.use(authenticate, requireAdmin);
+// Middleware pour toutes les routes : Authentification requise
+router.use(authenticate);
 
-// GET /api/users - Liste des utilisateurs
-router.get('/', async (req, res) => {
+// GET /api/users/search - Rechercher des utilisateurs (Accessible à tous les connectés)
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    let query = 'SELECT id, username, email FROM users';
+    let params = [];
+    
+    // Only filter if q is provided and at least 1 char
+    if (q && q.length > 0) {
+      query += ' WHERE username LIKE ? OR email LIKE ?';
+      params = [`%${q}%`, `%${q}%`];
+    }
+    
+    query += ' LIMIT 20';
+
+    const [users] = await pool.execute(query, params);
+
+    // Filter out current user
+    const filtered = users.filter(u => u.id !== req.user.id);
+
+    res.json({
+      success: true,
+      data: filtered
+    });
+  } catch (error) {
+    console.error('Erreur recherche users:', error);
+    res.status(500).json({ success: false, message: 'Erreur serveur' });
+  }
+});
+
+// GET /api/users - Liste tous les utilisateurs (Admin seulement)
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const [users] = await pool.execute(
       'SELECT id, username, email, role, created_at, updated_at FROM users'
@@ -20,7 +50,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/users - Créer un utilisateur
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 

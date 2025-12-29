@@ -198,7 +198,8 @@ export default {
       storeConfigTimer: null,
       showDragMask: false,
       isCloudMap: false,
-      cloudMapUuid: null
+      cloudMapUuid: null,
+      isReadOnly: false
     }
   },
   computed: {
@@ -338,22 +339,25 @@ export default {
 
     // Auto save to cloud
     autoSaveToCloud() {
-      if (!this.cloudMapUuid) return
+      if (!this.cloudMapUuid || this.isReadOnly) return
       clearTimeout(this.cloudSaveTimer)
       this.cloudSaveTimer = setTimeout(async () => {
         try {
+          this.$bus.$emit('cloud_save_start')
           const data = this.mindMap.getData(true)
           await api.updateMindMap(this.cloudMapUuid, {
             data
           })
+          this.$bus.$emit('cloud_save_end', { status: 'success' })
           // Optional: show saved status
-        } catch (error) {
         } catch (error) {
           console.error('Auto save failed', error)
           if (error.response && error.response.status === 404) {
-              this.$message.error('La carte a été supprimée du serveur. Arrêt de la sauvegarde automatique.')
-              this.cloudMapUuid = null
-              this.isCloudMap = false
+            this.$message.error(
+              'La carte a été supprimée du serveur. Arrêt de la sauvegarde automatique.'
+            )
+            this.cloudMapUuid = null
+            this.isCloudMap = false
           }
         }
       }, 1000)
@@ -380,14 +384,15 @@ export default {
             this.cloudMapUuid = uuid
           }
         } catch (error) {
-        } catch (error) {
           console.error(error)
           if (error.response && error.response.status === 404) {
-             this.$message.error('Carte introuvable. Redirection vers vos cartes...')
-             setTimeout(() => {
-                 this.$router.push('/my-maps')
-             }, 1000)
-             return
+            this.$message.error(
+              'Carte introuvable. Redirection vers vos cartes...'
+            )
+            setTimeout(() => {
+              this.$router.push('/my-maps')
+            }, 1000)
+            return
           }
           this.$message.error('Impossible de charger la carte')
         }
@@ -574,7 +579,7 @@ export default {
         return { ...fullData }
       }
       // 协同测试
-      this.cooperateTest()
+      // this.cooperateTest()
     },
 
     // 加载相关插件

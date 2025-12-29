@@ -61,6 +61,7 @@ export default {
   },
   
   // Share
+  // Share
   shareMindMap(uuid, isPublic) {
     return api.post(`/mindmaps/${uuid}/share`, { isPublic })
   },
@@ -70,7 +71,27 @@ export default {
   getSharedMindMap(token) {
     return api.get(`/share/${token}`)
   },
+  // Internal Sharing Permissions
+  getMapPermissions(uuid) {
+    return api.get(`/mindmaps/${uuid}/permissions`)
+  },
+  addMapPermission(uuid, username, permission = 'view') {
+    return api.post(`/mindmaps/${uuid}/permissions`, { username, permission })
+  },
+  removeMapPermission(uuid, userId) {
+    return api.delete(`/mindmaps/${uuid}/permissions/${userId}`)
+  },
+  unshareMindMap(uuid) {
+    return api.delete(`/mindmaps/${uuid}/share`)
+  },
+  getSharedMindMap(token) {
+    return api.get(`/share/${token}`)
+  },
 
+  // Users
+  searchUsers(query) {
+    return api.get(`/users/search?q=${query}`)
+  },
   // Users (Admin)
   getUsers() {
     return api.get('/users')

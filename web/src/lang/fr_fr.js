@@ -222,7 +222,11 @@ export default {
   },
   nodeImage: {
     title: 'Image',
-    imgTitle: 'Titre'
+    imgTitle: 'Titre',
+    method1: 'Méthode 1',
+    method2: 'Méthode 2',
+    urlLabel: 'Adresse de l\'image',
+    optional: 'Optionnel'
   },
   nodeNote: {
     title: 'Note'
