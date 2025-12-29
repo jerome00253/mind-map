@@ -41,14 +41,59 @@ Ce fork propose une **traduction intégrale de l'interface en français** :
 - Français défini comme langue par défaut
 - Sélecteur de langue simplifié (Français / English)
 
-### 🔮 Objectifs futurs
+### 🎯 Fonctionnalités supplémentaires implémentées
 
-Ce fork a pour objectif de développer des fonctionnalités supplémentaires :
+Ce fork enrichit le projet original avec un système complet de gestion multi-utilisateurs :
 
-- [ ] **Authentification utilisateur** - Système de login/password avec MySQL
-- [ ] **Sauvegarde en base de données** - Stockage des cartes mentales dans MySQL
-- [ ] **Partage de cartes** - URLs de partage avec permissions (public/privé)
-- [ ] **Collaboration** - Édition collaborative en temps réel
+#### ✅ Authentification et gestion des utilisateurs
+
+- **Système de connexion sécurisé** - Authentification JWT avec MySQL
+- **Gestion des rôles** - Système admin/utilisateur avec interface dédiée
+- **Inscription contrôlée** - Seuls les administrateurs peuvent créer des comptes
+- **Compte admin par défaut** : `jerome0025@gmail.com` / `pass123`
+
+#### ✅ Sauvegarde et persistance
+
+- **Base de données MySQL** - Stockage persistant de toutes les cartes mentales
+- **Sauvegarde automatique** - Synchronisation instantanée (debounce 1s)
+- **Tableau de bord "Mes Cartes"** - Interface de gestion centralisée
+- **Mode hybride** - Compatible avec le mode local (localStorage)
+
+#### ✅ Partage et collaboration
+
+- **Partage interne sécurisé** - Recherche d'utilisateurs par nom ou email
+- **Gestion des permissions** - Niveaux lecture/modification/propriétaire
+- **Interface intuitive** - Liste déroulante avec suggestions utilisateurs
+- **Badges de statut** - Identification visuelle des cartes partagées
+
+#### ✅ Sécurité et navigation
+
+- **Routes protégées** - Redirection automatique vers login si non connecté
+- **Navigation optimisée** - Flux `/my-maps` → `/edit?uuid=...`
+- **Gestion d'erreurs robuste** - Redirection intelligente sur 404
+- **Mode lecture seule** - Désactivation automatique de la sauvegarde pour les droits en lecture
+
+#### 🔮 Développements futurs
+
+- [ ] **Collaboration temps réel** - Édition collaborative via WebSocket
+- [ ] **Dossiers** - Organisation hiérarchique des cartes
+- [ ] **Historique de versions** - Suivi des modifications
+
+### 🏗️ Architecture technique ajoutée
+
+**Backend (Node.js/Express)**
+
+- API RESTful sur port 3000
+- MySQL avec gestion de schéma automatique
+- Middleware JWT pour l'authentification
+- Routes sécurisées avec contrôle d'accès
+
+**Frontend (améliorations)**
+
+- Vuex pour la gestion d'état auth
+- Router guards pour la sécurité
+- Intégration Element UI (locale FR)
+- API client centralisé
 
 ---
 
@@ -78,6 +123,7 @@ Toutes les fonctionnalités du projet original sont conservées :
 
 - Node.js (v16 ou supérieur recommandé)
 - npm
+- MySQL (v8 ou supérieur)
 
 ### Installation locale
 
@@ -86,22 +132,36 @@ Toutes les fonctionnalités du projet original sont conservées :
 git clone https://github.com/jerome00253/mind-map.git
 cd mind-map
 
-# Installer les dépendances de la bibliothèque
-cd simple-mind-map
+# 1. Configurer la base de données
+# Créer une base MySQL et noter les identifiants
+
+# 2. Installer le backend
+cd server
 npm install
 
-# Installer les dépendances de l'application web
+# Créer le fichier .env avec vos identifiants MySQL
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=votre_mot_de_passe
+# DB_NAME=mindmap
+# JWT_SECRET=votre_secret_jwt
+
+# Démarrer le serveur backend (port 3000)
+npm run dev
+
+# 3. Dans un autre terminal, installer le frontend
 cd ../web
 npm install
 
-# Installer le lien vers la bibliothèque locale
-npm install ../simple-mind-map
-
-# Lancer le serveur de développement
+# Lancer le serveur de développement (port 8080/8081/8082)
 npm run serve
 ```
 
 L'application sera accessible à `http://localhost:8081`
+
+**Connexion administrateur par défaut** :
+- Email : `jerome0025@gmail.com`
+- Mot de passe : `pass123`
 
 ### Compilation pour la production
 
