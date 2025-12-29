@@ -68,6 +68,29 @@
           <span class="icon iconfont iconexport"></span>
           <span class="text">{{ $t('toolbar.export') }}</span>
         </div>
+      </div>
+      <!-- Utilisateur -->
+      <div class="toolbarBlock">
+        <template v-if="user">
+          <el-dropdown trigger="click" @command="handleUserCommand">
+            <div class="toolbarBtn">
+              <span class="icon el-icon-user"></span>
+              <span class="text">{{ user.username }}</span>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="myMaps">Mes cartes</el-dropdown-item>
+              <el-dropdown-item command="logout" divided
+                >Se déconnecter</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+        <template v-else>
+          <div class="toolbarBtn" @click="$router.push('/login')">
+            <span class="icon el-icon-user"></span>
+            <span class="text">Connexion</span>
+          </div>
+        </template>
         <!-- 本地文件树 -->
         <div
           class="fileTreeBox"
@@ -150,7 +173,8 @@ import NodeNote from './NodeNote.vue'
 import NodeTag from './NodeTag.vue'
 import Export from './Export.vue'
 import Import from './Import.vue'
-import { mapState } from 'vuex'
+import Import from './Import.vue'
+import { mapState, mapActions } from 'vuex'
 import { Notification } from 'element-ui'
 import exampleData from 'simple-mind-map/example/exampleData'
 import { getData } from '../../../api'
@@ -214,7 +238,8 @@ export default {
       isDark: state => state.localConfig.isDark,
       isHandleLocalFile: state => state.isHandleLocalFile,
       openNodeRichText: state => state.localConfig.openNodeRichText,
-      enableAi: state => state.localConfig.enableAi
+      enableAi: state => state.localConfig.enableAi,
+      user: state => state.user
     }),
 
     btnLit() {
@@ -529,6 +554,19 @@ export default {
     onNodeNoteDblclick(node, e) {
       e.stopPropagation()
       this.$bus.$emit('showNodeNote', node)
+    },
+
+    ...mapActions(['logout']),
+
+    handleUserCommand(command) {
+      if (command === 'logout') {
+        this.logout()
+        this.$message.success('Déconnexion réussie')
+        this.$router.push('/login')
+      } else if (command === 'myMaps') {
+        // TODO: Navigate to My Maps
+        this.$message.info('Fonctionnalité Mes Cartes bientôt disponible')
+      }
     }
   }
 }

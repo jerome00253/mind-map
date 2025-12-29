@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { storeLocalConfig } from '@/api'
+import api from '@/api/backend'
 
 Vue.use(Vuex)
 
@@ -37,7 +38,10 @@ const store = new Vuex.Store({
     // 扩展主题列表
     extendThemeGroupList: [],
     // 内置背景图片
-    bgList: []
+    bgList: [],
+    // Auth
+    user: JSON.parse(localStorage.getItem('mindmap_user') || 'null'),
+    token: localStorage.getItem('mindmap_token') || ''
   },
   mutations: {
     // 设置操作本地文件标志位
@@ -99,9 +103,61 @@ const store = new Vuex.Store({
     // 设置背景图片列表
     setBgList(state, data) {
       state.bgList = data
+    },
+
+    // Auth
+    setUser(state, user) {
+      state.user = user
+      if (user) {
+        localStorage.setItem('mindmap_user', JSON.stringify(user))
+      } else {
+        localStorage.removeItem('mindmap_user')
+      }
+    },
+    setToken(state, token) {
+      state.token = token
+      if (token) {
+        localStorage.setItem('mindmap_token', token)
+      } else {
+        localStorage.removeItem('mindmap_token')
+      }
     }
   },
-  actions: {}
+  actions: {
+    async login({ commit }, data) {
+      const res = await api.login(data)
+      if (res.data.success) {
+        commit('setUser', res.data.data.user)
+        commit('setToken', res.data.data.token)
+      }
+      return res
+    },
+    async register({ commit }, data) {
+      const res = await api.register(data)
+      if (res.data.success) {
+        commit('setUser', res.data.data.user)
+        commit('setToken', res.data.data.token)
+      }
+      return res
+    },
+    async logout({ commit }) {
+      commit('setUser', null)
+      commit('setToken', '')
+      // Optional: call backend logout if endpoint exists
+    },
+    async getUser({ commit }) {
+      try {
+        const res = await api.getMe()
+        if (res.data.success) {
+          commit('setUser', res.data.data.user)
+        }
+      } catch (error) {
+        // Token invalid
+        commit('setUser', null)
+        commit('setToken', '')
+      }
+    }
+  }
 })
 
 export default store

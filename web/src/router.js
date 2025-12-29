@@ -16,6 +16,16 @@ const routes = [
   {
     path: '/doc/zh',
     component: () => import(`./pages/Doc.vue`)
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(`./pages/Login/Index.vue`)
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import(`./pages/Register/Index.vue`)
   }
 ]
 
