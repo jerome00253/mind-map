@@ -20,9 +20,13 @@ done
 
 echo "✅ MySQL est accessible"
 
+# Initialiser les tables de la base de données
+echo "🗄️ Initialisation des tables..."
+cd /app/backend
+node scripts/init_db.js || echo "⚠️ Erreur lors de l'initialisation des tables"
+
 # Créer les tables et l'utilisateur admin
 echo "👤 Création de l'utilisateur admin..."
-cd /app/backend
 node scripts/seed_admin.js || echo "⚠️ Seed admin déjà exécuté ou erreur"
 
 echo "✅ Configuration terminée"
