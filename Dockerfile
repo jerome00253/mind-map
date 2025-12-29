@@ -38,8 +38,8 @@ RUN npm install ../simple-mind-map && npm install && npm run build
 
 # Déplacer les fichiers compilés
 RUN mkdir -p /app/frontend && \
-    cp -r /app/frontend-src/dist/* /app/frontend/ && \
-    rm -rf /app/frontend-src /app/simple-mind-map
+    cp -r /app/dist/* /app/frontend/ && \
+    rm -rf /app/frontend-src /app/simple-mind-map /app/dist
 
 # Copier la configuration nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
