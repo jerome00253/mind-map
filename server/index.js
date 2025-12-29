@@ -5,6 +5,7 @@ const { testConnection, createTables } = require('./config/database');
 
 // Import des routes
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
 const mindmapsRoutes = require('./routes/mindmaps');
 const shareRoutes = require('./routes/share');
 
@@ -13,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:8081'],
+  origin: true, // Accepter toutes les origines pour le dev (ou spécifier ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:8082'])
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes API
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/mindmaps', mindmapsRoutes);
 app.use('/api/share', shareRoutes);
 

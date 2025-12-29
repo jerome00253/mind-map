@@ -36,6 +36,12 @@ const routes = [
     path: '/share/:token',
     name: 'Share',
     component: () => import(`./pages/Share/Index.vue`)
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: () => import(`./pages/Admin/Users.vue`),
+    meta: { requiresAdmin: true }
   }
 ]
 

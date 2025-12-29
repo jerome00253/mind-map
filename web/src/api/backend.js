@@ -69,5 +69,19 @@ export default {
   },
   getSharedMindMap(token) {
     return api.get(`/share/${token}`)
+  },
+
+  // Users (Admin)
+  getUsers() {
+    return api.get('/users')
+  },
+  createUser(data) {
+    return api.post('/users', data)
+  },
+  updateUser(id, data) {
+    return api.put(`/users/${id}`, data)
+  },
+  deleteUser(id) {
+    return api.delete(`/users/${id}`)
   }
 }

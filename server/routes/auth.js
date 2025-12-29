@@ -5,76 +5,12 @@ const { pool } = require('../config/database');
 const { generateToken, authenticate } = require('../middleware/auth');
 
 // POST /api/auth/register - Inscription
+// POST /api/auth/register - Inscription (Désactivée)
 router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    // Validation
-    if (!username || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tous les champs sont requis (username, email, password)'
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'Le mot de passe doit contenir au moins 6 caractères'
-      });
-    }
-
-    // Vérifier si l'utilisateur existe déjà
-    const [existing] = await pool.execute(
-      'SELECT id FROM users WHERE username = ? OR email = ?',
-      [username, email]
-    );
-
-    if (existing.length > 0) {
-      return res.status(409).json({
-        success: false,
-        message: 'Ce nom d\'utilisateur ou email est déjà utilisé'
-      });
-    }
-
-    // Hasher le mot de passe
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    // Créer l'utilisateur
-    const [result] = await pool.execute(
-      'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-      [username, email, passwordHash]
-    );
-
-    const user = {
-      id: result.insertId,
-      username,
-      email
-    };
-
-    // Générer le token
-    const token = generateToken(user);
-
-    res.status(201).json({
-      success: true,
-      message: 'Inscription réussie',
-      data: {
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email
-        },
-        token
-      }
-    });
-  } catch (error) {
-    console.error('Erreur inscription:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erreur lors de l\'inscription'
-    });
-  }
+  return res.status(403).json({
+    success: false,
+    message: 'L\'inscription est désactivée. Veuillez contacter un administrateur.'
+  });
 });
 
 // POST /api/auth/login - Connexion

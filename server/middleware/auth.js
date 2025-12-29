@@ -25,7 +25,8 @@ const authenticate = async (req, res, next) => {
     req.user = {
       id: decoded.id,
       username: decoded.username,
-      email: decoded.email
+      email: decoded.email,
+      role: decoded.role || 'user'
     };
 
     next();
@@ -72,15 +73,29 @@ const generateToken = (user) => {
     { 
       id: user.id, 
       username: user.username, 
-      email: user.email 
+      email: user.email,
+      role: user.role
     },
     JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 };
 
+// Middleware Admin
+const requireAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({
+      success: false,
+      message: 'Accès refusé : Administrateur requis'
+    });
+  }
+};
+
 module.exports = {
   authenticate,
   optionalAuth,
-  generateToken
+  generateToken,
+  requireAdmin
 };

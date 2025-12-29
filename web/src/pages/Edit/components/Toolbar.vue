@@ -79,6 +79,11 @@
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="myMaps">Mes cartes</el-dropdown-item>
+              <el-dropdown-item
+                command="adminUsers"
+                v-if="user.role === 'admin'"
+                >Gérer utilisateurs</el-dropdown-item
+              >
               <el-dropdown-item command="logout" divided
                 >Se déconnecter</el-dropdown-item
               >
@@ -564,6 +569,8 @@ export default {
         this.$router.push('/login')
       } else if (command === 'myMaps') {
         this.$router.push('/my-maps')
+      } else if (command === 'adminUsers') {
+        this.$router.push('/admin/users')
       }
     }
   }
