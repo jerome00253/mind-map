@@ -127,11 +127,10 @@ export default {
               if (res.data.success) {
                 // Construct absolute URL if needed, or relative
                 // The backend returns '/uploads/filename.ext'
-                // We need to prepend server URL if frontend/backend are on different ports/domains
-                // But typically for <img> src, a relative path works if served from same origin or proxy.
-                // However, development setup has port 8080 (frontend) and 3000 (backend).
-                // So we need full URL.
-                imgUrl = `http://localhost:3000${res.data.url}`
+                // The backend returns '/uploads/filename.ext'
+                // In production (and dev with proxy), we can just use the relative path.
+                // The browser will resolve it against the current origin.
+                imgUrl = res.data.url
               } else {
                 this.$message.error('Upload failed')
                 return
