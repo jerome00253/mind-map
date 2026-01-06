@@ -39,6 +39,7 @@
 <script>
 import ImgUpload from '@/components/ImgUpload/index.vue'
 import { getImageSize, isMobile } from 'simple-mind-map/src/utils/index'
+import api from '@/api/backend'
 
 // 节点图片内容设置
 export default {
@@ -106,21 +107,61 @@ export default {
           })
           return
         }
-        let res = null
-        let img = ''
+
+        let imgUrl = ''
+        let width = 100
+        let height = 100
+
         if (this.img) {
-          img = this.img
-          res = await this.$refs.ImgUpload.getSize()
+          // If we have a base64/blob from ImgUpload
+          // We need to get the actual file object.
+          // Since ImgUpload doesn't expose it directly in v-model (it emits base64),
+          // we can access it via ref or we need to modify ImgUpload.
+          // Looking at ImgUpload.vue: selectImg(file) sets this.file = file.
+          // So we can access `this.$refs.ImgUpload.file`.
+
+          const file = this.$refs.ImgUpload.file
+          if (file) {
+            try {
+              const res = await api.uploadFile(file)
+              if (res.data.success) {
+                // Construct absolute URL if needed, or relative
+                // The backend returns '/uploads/filename.ext'
+                // We need to prepend server URL if frontend/backend are on different ports/domains
+                // But typically for <img> src, a relative path works if served from same origin or proxy.
+                // However, development setup has port 8080 (frontend) and 3000 (backend).
+                // So we need full URL.
+                imgUrl = `http://localhost:3000${res.data.url}`
+              } else {
+                this.$message.error('Upload failed')
+                return
+              }
+            } catch (e) {
+              console.error(e)
+              this.$message.error('Upload error')
+              return
+            }
+          } else {
+            // Fallback if file not found (should not happen if img is set via file input)
+            imgUrl = this.img
+          }
+
+          const res = await this.$refs.ImgUpload.getSize()
+          width = res.width
+          height = res.height
         } else if (this.imgUrl) {
-          img = this.imgUrl
-          res = await getImageSize(img)
+          imgUrl = this.imgUrl
+          const res = await getImageSize(imgUrl)
+          width = res.width
+          height = res.height
         }
+
         this.activeNodes.forEach(node => {
           node.setImage({
-            url: img || 'none',
+            url: imgUrl || 'none',
             title: this.imgTitle,
-            width: res.width || 100,
-            height: res.height || 100
+            width: width || 100,
+            height: height || 100
           })
         })
         this.cancel()

@@ -104,5 +104,16 @@ export default {
   },
   deleteUser(id) {
     return api.delete(`/users/${id}`)
+  },
+
+  // Upload
+  uploadFile(file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    return api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }

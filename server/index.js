@@ -8,6 +8,8 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const mindmapsRoutes = require('./routes/mindmaps');
 const shareRoutes = require('./routes/share');
+const uploadRoutes = require('./routes/upload');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,11 +22,15 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static files from public directory
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/mindmaps', mindmapsRoutes);
 app.use('/api/share', shareRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Route de santé
 app.get('/api/health', (req, res) => {
