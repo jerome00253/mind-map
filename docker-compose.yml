@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mysql:
@@ -11,6 +11,7 @@ services:
       MYSQL_PASSWORD: mindmap_password
     volumes:
       - ./data/mysql:/var/lib/mysql
+      - ./data/uploads:/app/backend/public/uploads
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
