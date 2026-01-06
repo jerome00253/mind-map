@@ -2,8 +2,6 @@ const path = require('path')
 const isDev = process.env.NODE_ENV === 'development'
 const isLibrary = process.env.NODE_ENV === 'library'
 
-const WebpackDynamicPublicPathPlugin = require('webpack-dynamic-public-path')
-
 module.exports = {
   publicPath: isDev ? '' : '/',
   outputDir: '../dist',
@@ -33,8 +31,8 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '^/api/v3/': {
-        target: 'http://ark.cn-beijing.volces.com',
+      '^/api/': {
+        target: 'http://localhost:3000',
         changeOrigin: true
       }
     }
