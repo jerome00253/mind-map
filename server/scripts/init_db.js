@@ -1,13 +1,24 @@
-const { createTables } = require('../config/database');
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
 async function initDatabase() {
   try {
-    console.log('🗄️ Initialisation des tables...');
-    await createTables();
-    console.log('✅ Tables initialisées');
+    // Connect without database selected
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+    });
+
+    const dbName = process.env.DB_NAME || "mindmap";
+
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+    console.log(`✅ Database '${dbName}' checked/created.`);
+
+    await connection.end();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erreur lors de l\'initialisation:', error);
+    console.error("❌ Database initialization failed:", error);
     process.exit(1);
   }
 }

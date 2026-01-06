@@ -8,3 +8,6 @@ utools/dist
 # Docker
 docker/.env.docker.local
 data/
+
+# Uploads
+server/public/uploads/
