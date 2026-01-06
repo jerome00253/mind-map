@@ -6,6 +6,7 @@ const fs = require('fs');
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, '../public/uploads');
+console.log('Upload Directory resolved to:', uploadDir); // Debug log
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
